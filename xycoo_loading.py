@@ -18,7 +18,9 @@ cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 #480p resolution
 cap.set(3, 640)
 cap.set(4, 480)
-
+cap.set(10,250) #brightness
+cap.set(11,50) #contrast
+cap.set(12,100) #saturation
 
 #-----------------chuyen he truc toa do-------------------------------------------------
 CM_TO_PIXEL = 32 / 640 #32 la so do thuc te cua frame
