@@ -1,10 +1,6 @@
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
-from numpy import linalg
-import cmath
 from math import *
-import time
 from decimal import *
 
 global mat 
