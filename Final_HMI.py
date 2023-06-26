@@ -2,8 +2,8 @@ from tkinter import *
 import tkinter.filedialog as tkf
 import cv2
 import numpy as np
-from numpy import linalg
-import cmath
+#from numpy import linalg
+#import cmath
 import math
 from math import *
 
@@ -18,7 +18,7 @@ a3 = 12
 
 hmi = Tk()
 hmi.title("PROJECT: SORTING OBJECT USING ROBOT ARM")
-hmi.geometry("500x500")
+hmi.geometry("700x500")
 
 label = Label(hmi, text="MÀN HÌNH ĐIỀU KHIỂN", font=("Montserrat", 20))
 label.pack()
@@ -248,7 +248,12 @@ def phan_loai_mau():
     
     
     #label.configure(text="PHÂN LOẠI MÀU SẮC", font=("Montserrat", 20))
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap.set(3,640)
+    cap.set(4,480)
+    cap.set(10,250) #brightness
+    cap.set(11,100) #contrast
+    cap.set(12,100) #saturation
 
     img_count = 1
     
@@ -298,10 +303,10 @@ def phan_loai_mau():
 
 but1 = Button(hmi, text="PHÂN LOẠI HÌNH DÁNG", height=2, width=20, 
 font=("Montserrat", 12), command=phan_loai_hinh3)
-but1.place(x=100, y=100)
+but1.place(x=90, y=100)
 
 but2 = Button(hmi, text="PHÂN LOẠI MÀU SẮC", height=2, width=20, font=("Montserrat", 12), command=phan_loai_mau)
-but2.place(x=100, y=300)
+but2.place(x=90, y=300)
 
 
 hmi.mainloop()
