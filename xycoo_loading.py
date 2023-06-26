@@ -22,7 +22,7 @@ cap.set(4, 480)
 #cap.set(11,50) #contrast
 #cap.set(12,100) #saturation
 
-#-----------------chuyen he truc toa do-------------------------------------------------
+#-----------------chuyen he truc toa do-----------------------------------------------------
 CM_TO_PIXEL = 32 / 640 #32 la so do thuc te cua frame
 
 #def matrix_move ():
@@ -74,9 +74,9 @@ while True:
     frame = cv2. flip(frame, 1)
     roi = frame[0:480, 140:480]
     
-    object_detector = cv2.createBackgroundSubtractorMOG2(history=100,varThreshold=40)
-    gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-    mask = object_detector.apply(roi)
+    #object_detector = cv2.createBackgroundSubtractorMOG2(history=100,varThreshold=40)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    #mask = object_detector.apply(roi)
     
     _, threshold = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
     
@@ -88,7 +88,7 @@ while True:
         area = cv2.contourArea(c)
         if area > 1000:
             x,y,w,h = cv2.boundingRect(c)
-            cv2.rectangle(roi, (x,y), (x+w,y+h), (250,0,100), 2)
+            cv2.rectangle(frame, (x,y), (x+w,y+h), (250,0,100), 2)
 
             x2 = x + int(w/2)
             y2 = y + int(h/2)
@@ -107,7 +107,7 @@ while True:
 
             text1 = "x: " + str(x2_cm) + "cm, y: " + str(y2_cm) + "cm"
             text2 = "x: " + str(coord_base_frame[0][0]) + ", y: " + str(coord_base_frame[1][0])
-            cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            cv2.putText(frame, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
             tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
             print(tg)
@@ -116,8 +116,8 @@ while True:
 
 
     cv2.imshow("frame", frame)
-    cv2.imshow("RoI", roi)
-    cv2.imshow("threshold", threshold)
+    #cv2.imshow("RoI", roi)
+    #cv2.imshow("threshold", threshold)
     #cv2.imshow("Gray", gray)
     if cv2.waitKey(1) == 27:
         break
