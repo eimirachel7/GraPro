@@ -18,18 +18,20 @@ cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 #480p resolution
 cap.set(3, 640)
 cap.set(4, 480)
-cap.set(10,250) #brightness
-cap.set(11,50) #contrast
-cap.set(12,100) #saturation
+#cap.set(10,50) #brightness
+#cap.set(11,50) #contrast
+#cap.set(12,100) #saturation
 
 #-----------------chuyen he truc toa do-------------------------------------------------
 CM_TO_PIXEL = 32 / 640 #32 la so do thuc te cua frame
 
+#def matrix_move ():
+
 rot_angle = 180
 rot_angle = np.deg2rad(rot_angle)
 rot_mat_0_c = np.array([[1, 0, 0],
-                        [0, np.cos(rot_angle), -np.sin(rot_angle)],
-                        [0, np.sin(rot_angle), np.cos(rot_angle)]])
+                            [0, np.cos(rot_angle), -np.sin(rot_angle)],
+                            [0, np.sin(rot_angle), np.cos(rot_angle)]])
 
 disp_vec_0_c = np.array([[-1.8],[24.4],[0.0]]) #khoang cach x,y,z giua 2 goc toa do
 
@@ -39,9 +41,10 @@ homgen_0_c = np.concatenate((rot_mat_0_c,disp_vec_0_c), axis=1)
 homgen_0_c = np.concatenate((homgen_0_c, extra_row_homgen), axis=0)
 
 coord_base_frame = np.array([[0.0],
-                            [0.0],
-                            [0.0],
-                            [1]])
+                                [0.0],
+                                [0.0],
+                                [1]])
+    #return homgen_0_c, coord_base_frame
 #------------------------------------------------------------------------------------------
 
 #-------------------dong hoc nguoc---------------------------------------------------------
@@ -75,7 +78,7 @@ while True:
     #gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
     mask = object_detector.apply(roi)
     
-    _, threshold = cv2.threshold(mask, 200, 255, cv2.THRESH_BINARY)
+    _, threshold = cv2.threshold(mask, 100, 200, cv2.THRESH_BINARY)
     
     kernel = np.ones((5,5),np.uint8)
     cv2.dilate(threshold, kernel, iterations=1)
@@ -98,8 +101,9 @@ while True:
                                 [y2_cm],
                                 [0.0],
                                 [1]])
+            #MT = np.arrmatrix_move()
             coord_base_frame = homgen_0_c @ cam_ref_coord
-            
+            #MT[2] = MT[1] @ cam_ref_coord
 
             text1 = "x: " + str(x2_cm) + "cm, y: " + str(y2_cm) + "cm"
             text2 = "x: " + str(coord_base_frame[0][0]) + ", y: " + str(coord_base_frame[1][0])
