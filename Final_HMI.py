@@ -61,6 +61,23 @@ def coor_move():
     return coord_base_frame, homgen_0_c
 
 #-------------------------------------------------------------------------------------------
+#-----------------chia xung-----------------------------------------------------------------
+def pulse_convert(t1,t2,t3):
+    t11 = np.rad2deg(t1)
+    t21 = np.rad2deg(t2)
+    t31 = np.rad2deg(t3)
+    p1 = t11 * (500/360)
+    p2 = t21 * (500/360)
+    p3 = t31 * (500/360)
+
+    p1 = abs(p1)
+    p2 = abs(p2)
+    p3 = abs(p3)
+    
+    pulse = np.array([p1, p2, p3])
+    return pulse
+
+#-------------------------------------------------------------------------------------------
 
 hmi = Tk()
 hmi.title("PROJECT: SORTING OBJECT USING ROBOT ARM")
@@ -304,6 +321,9 @@ def phan_loai_hinh3():
                 tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
                 print(tg)
 
+                ps = pulse_convert(tg[0], tg[1], tg[2])
+                print(ps)
+
         cv2.imshow("Frame", frame)
         cv2.imshow("RoI", roi)
         cv2.imshow("threshold", threshold)
@@ -400,6 +420,9 @@ def phan_loai_hinh_va_mau():
             
                 tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
                 print(tg)
+
+                ps = pulse_convert(tg[0], tg[1], tg[2])
+                print(ps)
 
         cv2.imshow("frame", frame)
         cv2.imshow("hsv", hsv)

@@ -56,6 +56,23 @@ def coor_move():
     return coord_base_frame, homgen_0_c
 
 #-------------------------------------------------------------------------------------------
+#-----------------chia xung-----------------------------------------------------------------
+def pulse_convert(t1,t2,t3):
+    t11 = np.rad2deg(t1)
+    t21 = np.rad2deg(t2)
+    t31 = np.rad2deg(t3)
+    p1 = t11 * (500/360)
+    p2 = t21 * (500/360)
+    p3 = t31 * (500/360)
+
+    p1 = abs(p1)
+    p2 = abs(p2)
+    p3 = abs(p3)
+    
+    pulse = np.array([p1, p2, p3])
+    return pulse
+
+#-------------------------------------------------------------------------------------------
 
 lower = {'red':([166, 84, 141]), 'green':([50, 50, 120]), 'blue':([97, 100, 117]),'yellow':([23, 59, 119]), 'orange':([0, 50, 80]), 'purple':([130, 80, 80])} #assign new item lower['blue'] = (93, 10, 0)
 upper = {'red':([186,255,255]), 'green':([70, 255, 255]), 'blue':([117,255,255]), 'yellow':([54,255,255]), 'orange':([20,255,255]), 'purple':([150, 255, 255])}
@@ -142,6 +159,9 @@ while True:
         
             tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
             print(tg)
+
+            ps = pulse_convert(tg[0], tg[1], tg[2])
+            print(ps)
 
     cv2.imshow("frame", frame)
     cv2.imshow("hsv", hsv)
