@@ -6,6 +6,7 @@ import numpy as np
 #import cmath
 import math
 from math import *
+from decimal import *
 
 global mat
 mat = np.matrix
@@ -311,6 +312,103 @@ def phan_loai_hinh3():
     cap.release()
     cv2.destroyAllWindows()
 
+def phan_loai_hinh_va_mau():
+    #-------------------------------------------------------------------------------------------
+
+    lower = {'red':([166, 84, 141]), 'green':([50, 50, 120]), 'blue':([97, 100, 117]),'yellow':([23, 59, 119]), 'orange':([0, 50, 80]), 'purple':([130, 80, 80])} #assign new item lower['blue'] = (93, 10, 0)
+    upper = {'red':([186,255,255]), 'green':([70, 255, 255]), 'blue':([117,255,255]), 'yellow':([54,255,255]), 'orange':([20,255,255]), 'purple':([150, 255, 255])}
+
+    colors = {'red':(0,0,255), 'green':(0,255,0), 'blue':(255,0,0), 'yellow':(0, 255, 217), 'orange':(0,140,255), 'purple':(211,0,148)}
+
+    cap = cv2.VideoCapture(0)
+    cap.set(3,640)
+    cap.set(4,480)
+
+    cap.set(10,250) #brightness
+    cap.set(11,50) #contrast
+    cap.set(12,100) #saturation
+
+    while True:
+        _, frame = cap.read()
+        frame = cv2.flip(frame, 1)
+        roi = frame[0:480, 140:480]
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(roi, (11,11), 0)
+        hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+
+        mlist = []
+        clist = []
+        ks = []
+
+        for (key, value) in upper.items():
+            kernel = np.ones((2,2),np.uint8)
+            mask = cv2.inRange(hsv,np.array(lower[key]),np.array(upper[key]))
+            mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+            mask = cv2.dilate(mask, kernel, iterations=1)
+            mlist.append(mask)
+            cnts, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            if len(cnts)>=1:
+                clist.append(cnts[-1])
+                ks.append(key)
+
+        #print(ks)
+        
+        for i,cnt in enumerate(clist):
+            area = cv2.contourArea(cnt)
+            approx = cv2.approxPolyDP(cnt, 0.02*cv2.arcLength(cnt, True), True)
+            x = approx.ravel()[0]
+            y = approx.ravel()[1]
+
+            if area > 400:
+                #cv2.drawContours(frame, [approx], 0, (0,0,0), 2)
+                x,y,w,h = cv2.boundingRect(cnt)
+                cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
+                
+                x2 = x + int(w/2)
+                y2 = y + int(h/2)
+
+                x2_cm = x2*CM_TO_PIXEL
+                y2_cm = y2*CM_TO_PIXEL
+                cam_ref_coord = np.array([[x2_cm],
+                                    [y2_cm],
+                                    [0.0],
+                                    [1]])
+                coor_move()
+                coord_base_frame = homgen_0_c @ cam_ref_coord
+                #time.sleep(0.1)
+                text1 = "x: " + str(x2_cm) + "cm, y: " + str(y2_cm) + "cm"
+                text2 = "x: " + str(coord_base_frame[0][0]) + "cm" + ", y: " + str(coord_base_frame[1][0]) + "cm"
+
+                #cv2.circle(frame, (x2,y2), 4, (0,255,255), 1)
+                #cv2.putText(frame, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
+            
+                if len(approx) == 3:
+                    cv2.putText(roi, ks[i] + " Triangle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
+                    cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
+                    cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
+                    
+                elif len(approx) >= 4 and len(approx) <= 6:
+                    cv2.putText(roi, ks[i] + " Rectangle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
+                    cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
+                    cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
+                
+                elif len(approx) >= 10 and len(approx) <= 20:
+                    cv2.putText(roi, ks[i] + " Circle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
+                    cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
+                    cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
+            
+                tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
+                print(tg)
+
+        cv2.imshow("frame", frame)
+        cv2.imshow("hsv", hsv)
+        cv2.imshow("RoI", roi)
+        if cv2.waitKey(1) == 27:
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+
 def phan_loai_mau():
     
     
@@ -368,13 +466,16 @@ def phan_loai_mau():
     cv2.destroyAllWindows()
 
 
-but1 = Button(hmi, text="PHÂN LOẠI HÌNH DÁNG", height=2, width=20, 
+but1 = Button(hmi, text="PHÂN LOẠI HÌNH DÁNG", height=2, width=25, 
               font=("Montserrat", 12), command=phan_loai_hinh3)
 but1.place(x=90, y=100)
 
-but2 = Button(hmi, text="PHÂN LOẠI MÀU SẮC", height=2, width=20, 
+but2 = Button(hmi, text="PHÂN LOẠI MÀU SẮC", height=2, width=25, 
               font=("Montserrat", 12), command=phan_loai_mau)
 but2.place(x=90, y=300)
 
+but3 = Button(hmi, text="PHÂN LOẠI HÌNH VÀ MÀU", height=2, width=30, 
+              font=("Montserrat", 12), command=phan_loai_hinh_va_mau)
+but3.place(x=350, y=200)
 
 hmi.mainloop()
