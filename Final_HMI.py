@@ -76,7 +76,7 @@ def pulse_convert(t1,t2,t3):
     p1 = abs(p1)
     p2 = abs(p2)
     p3 = abs(p3)
-    
+        
     pulse = np.array([p1, p2, p3])
     return pulse
 
@@ -507,7 +507,7 @@ but3 = Button(hmi, text="PHÂN LOẠI HÌNH VÀ MÀU", height=2, width=25,
 but3.place(x=90, y=300)
 
 img_hust = (Image.open(r'H:\SHIET\Python\ImgProcessing\GraPro\hustlogo.PNG'))
-resize = img_hust.resize((200,295), Image.ANTIALIAS)
+resize = img_hust.resize((200,295), Image.LANCZOS)
 img = ImageTk.PhotoImage(resize)
 #img = ImageTk.PhotoImage(img_hust)
 anh = Button(hmi, text="", font=("Montserrat", 12), image=img)
