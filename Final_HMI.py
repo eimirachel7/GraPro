@@ -1,5 +1,5 @@
 from tkinter import *
-#import tkinter.filedialog as tkf
+from PIL import ImageTk, Image
 import cv2
 import numpy as np
 #from numpy import linalg
@@ -33,9 +33,15 @@ def inv_Kine(xE, yE, zE):
         s2 = (a2*(zE-d1)+a3*(c3*(zE-d1)-s3*(xE/c1)))/(pow((xE/c1),2)+pow((zE-d1),2))
         theta2 = atan2(s2,c2)
 
-        theta = np.array([theta1, theta2, theta3])
+        if (theta3 > 2*pi):
+            theta3 = theta3 - 2*pi
 
+        # if (theta1>=-pi/2) and (theta1<=pi/2) and (theta3>=0) and (theta3<=2*pi/3):
+        #     theta = np.array([theta1, theta2, theta3])
+        #     return theta
+        theta = np.array([theta1, theta2, theta3])
         return theta
+
     else:
         pass
 #-----------------chuyen he truc toa do-----------------------------------------------------
@@ -288,7 +294,7 @@ def phan_loai_hinh3():
             if area > 4000 and area < 6000:
                 x,y,w,h = cv2.boundingRect(c)
                 cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
-                cv2.rectangle(threshold, (x,y), (x+w,y+h), (0,255,20), 2)
+                #cv2.rectangle(threshold, (x,y), (x+w,y+h), (0,255,20), 2)
 
                 x2 = x + int(w/2)
                 y2 = y + int(h/2)
@@ -321,11 +327,11 @@ def phan_loai_hinh3():
                 cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                 cv2.putText(roi, shape, (x, y-5), cv2.FONT_ITALIC, 1, (100, 0, 255), 1, cv2.LINE_AA)
 
-                tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
+                tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 10) # chieu cao vat so voi toa do robot
                 print(tg)
 
-                #ps = pulse_convert(tg[0], tg[1], tg[2])
-                #print(ps)
+                ps = pulse_convert(tg[0], tg[1], tg[2])
+                print(ps)
             else: 
                 pass
 
@@ -426,8 +432,8 @@ def phan_loai_hinh_va_mau():
                 tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
                 print(tg)
 
-                #ps = pulse_convert(tg[0], tg[1], tg[2])
-                #print(ps)
+                ps = pulse_convert(tg[0], tg[1], tg[2])
+                print(ps)
 
         cv2.imshow("frame", frame)
         cv2.imshow("hsv", hsv)
@@ -494,10 +500,17 @@ but1.place(x=90, y=100)
 
 but2 = Button(hmi, text="PHÂN LOẠI MÀU SẮC", height=2, width=25, 
               font=("Montserrat", 12), command=phan_loai_mau)
-but2.place(x=90, y=300)
+but2.place(x=90, y=200)
 
-but3 = Button(hmi, text="PHÂN LOẠI HÌNH VÀ MÀU", height=2, width=30, 
+but3 = Button(hmi, text="PHÂN LOẠI HÌNH VÀ MÀU", height=2, width=25, 
               font=("Montserrat", 12), command=phan_loai_hinh_va_mau)
-but3.place(x=350, y=200)
+but3.place(x=90, y=300)
+
+img_hust = (Image.open(r'H:\SHIET\Python\ImgProcessing\GraPro\hustlogo.PNG'))
+resize = img_hust.resize((200,295), Image.ANTIALIAS)
+img = ImageTk.PhotoImage(resize)
+#img = ImageTk.PhotoImage(img_hust)
+anh = Button(hmi, text="", font=("Montserrat", 12), image=img)
+anh.place(x=400, y=70)
 
 hmi.mainloop()
