@@ -268,6 +268,8 @@ def phan_loai_hinh3():
     cap.set(10,0)
     cap.set(11,50)
     cap.set(12,80)
+    global shape
+    shape = "undifined"
 
     while True:
         ret, frame = cap.read()
@@ -279,6 +281,7 @@ def phan_loai_hinh3():
         cv2.dilate(threshold, kernel, iterations=1)
         threshold = cv2.GaussianBlur(threshold, (15,15), 0)
         contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
         for c in contours:
             epsilon = 0.03*cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, epsilon, True)
@@ -286,7 +289,7 @@ def phan_loai_hinh3():
             #    cv2.circle(frame, (pt[0][0], pt[0][1]), 5, (255, 0, 0), -1)
             area = cv2.contourArea(c)
             
-            if area > 1000:
+            if area > 10000:
                 x,y,w,h = cv2.boundingRect(c)
                 cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 x2 = x + int(w/2)
@@ -302,15 +305,18 @@ def phan_loai_hinh3():
                 coor_move()
                 coord_base_frame = homgen_0_c @ cam_ref_coord
 
-                shape = "undefined"
+                #shape = "undefined"
                 if len(approx) == 3:
                     shape = "triangle"
+                    #cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 elif len(approx)>=4 and len(approx)<=6:
                     shape = "Rectangle"
+                    #cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 elif len(approx)>=10 and len(approx)<=30:
                     shape = "Circle"
+                    #cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 else:
-                    shape = "Error"
+                    pass
                 
 
                 text1 = "x: " + str(x2_cm) + "cm, y: " + str(y2_cm) + "cm"
@@ -321,8 +327,8 @@ def phan_loai_hinh3():
                 tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
                 print(tg)
 
-                ps = pulse_convert(tg[0], tg[1], tg[2])
-                print(ps)
+                #ps = pulse_convert(tg[0], tg[1], tg[2])
+                #print(ps)
 
         cv2.imshow("Frame", frame)
         cv2.imshow("RoI", roi)
@@ -335,10 +341,10 @@ def phan_loai_hinh3():
 def phan_loai_hinh_va_mau():
     #-------------------------------------------------------------------------------------------
 
-    lower = {'red':([166, 84, 141]), 'green':([50, 50, 120]), 'blue':([97, 100, 117]),'yellow':([23, 59, 119]), 'orange':([0, 50, 80]), 'purple':([130, 80, 80])} #assign new item lower['blue'] = (93, 10, 0)
-    upper = {'red':([186,255,255]), 'green':([70, 255, 255]), 'blue':([117,255,255]), 'yellow':([54,255,255]), 'orange':([20,255,255]), 'purple':([150, 255, 255])}
+    lower = {'red':([166, 84, 141]), 'blue':([97, 100, 117]),'yellow':([23, 59, 119]), 'orange':([0, 50, 80]), 'purple':([130, 80, 80])} #assign new item lower['blue'] = (93, 10, 0)
+    upper = {'red':([186,255,255]), 'blue':([117,255,255]), 'yellow':([54,255,255]), 'orange':([20,255,255]), 'purple':([150, 255, 255])}
 
-    colors = {'red':(0,0,255), 'green':(0,255,0), 'blue':(255,0,0), 'yellow':(0, 255, 217), 'orange':(0,140,255), 'purple':(211,0,148)}
+    colors = {'red':(0,0,255), 'blue':(255,0,0), 'yellow':(0, 255, 217), 'orange':(0,140,255), 'purple':(211,0,148)}
 
     cap = cv2.VideoCapture(0)
     cap.set(3,640)
@@ -380,7 +386,7 @@ def phan_loai_hinh_va_mau():
             x = approx.ravel()[0]
             y = approx.ravel()[1]
 
-            if area > 400:
+            if area >= 5000 and area <= 8000:  #dieu chinh kich thuoc 
                 #cv2.drawContours(frame, [approx], 0, (0,0,0), 2)
                 x,y,w,h = cv2.boundingRect(cnt)
                 cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
@@ -421,8 +427,8 @@ def phan_loai_hinh_va_mau():
                 tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
                 print(tg)
 
-                ps = pulse_convert(tg[0], tg[1], tg[2])
-                print(ps)
+                #ps = pulse_convert(tg[0], tg[1], tg[2])
+                #print(ps)
 
         cv2.imshow("frame", frame)
         cv2.imshow("hsv", hsv)
@@ -442,8 +448,6 @@ def phan_loai_mau():
     cap.set(10,250) #brightness
     cap.set(11,100) #contrast
     cap.set(12,100) #saturation
-
-    img_count = 1
     
     while True:
 
@@ -468,8 +472,7 @@ def phan_loai_mau():
         elif (hue_value < 131 and hue_value > 80):
             color = "BLUE"
         else:
-            color = "NONE"            
-            #continue
+            pass
 
 
         pixel_center_bgr = frame[cy,cx]
@@ -482,9 +485,6 @@ def phan_loai_mau():
         cv2.imshow("Frame", frame)
         if cv2.waitKey(1) == 27:
             break
-        elif cv2.waitKey(1) == ord('s'):
-            cv2.imwrite(f"img\color{img_count}.png", frame)
-            img_count += 1 
     cap.release()
     cv2.destroyAllWindows()
 

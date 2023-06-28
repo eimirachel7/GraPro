@@ -74,10 +74,10 @@ def pulse_convert(t1,t2,t3):
 
 #-------------------------------------------------------------------------------------------
 
-lower = {'red':([166, 84, 141]), 'green':([50, 50, 120]), 'blue':([97, 100, 117]),'yellow':([23, 59, 119]), 'orange':([0, 50, 80]), 'purple':([130, 80, 80])} #assign new item lower['blue'] = (93, 10, 0)
-upper = {'red':([186,255,255]), 'green':([70, 255, 255]), 'blue':([117,255,255]), 'yellow':([54,255,255]), 'orange':([20,255,255]), 'purple':([150, 255, 255])}
+lower = {'red':([166, 84, 141]), 'blue':([97, 100, 117]),'yellow':([23, 59, 119]), 'orange':([0, 50, 80]), 'purple':([130, 80, 80])} #assign new item lower['blue'] = (93, 10, 0)
+upper = {'red':([186,255,255]),  'blue':([117,255,255]), 'yellow':([54,255,255]), 'orange':([20,255,255]), 'purple':([150, 255, 255])}
 
-colors = {'red':(0,0,255), 'green':(0,255,0), 'blue':(255,0,0), 'yellow':(0, 255, 217), 'orange':(0,140,255), 'purple':(211,0,148)}
+colors = {'red':(0,0,255), 'blue':(255,0,0), 'yellow':(0, 255, 217), 'orange':(0,140,255), 'purple':(211,0,148)}
 
 cap = cv2.VideoCapture(0)
 cap.set(3,640)
@@ -119,7 +119,7 @@ while True:
         x = approx.ravel()[0]
         y = approx.ravel()[1]
 
-        if area > 400:
+        if area > 10000 and area < 30000:
             #cv2.drawContours(frame, [approx], 0, (0,0,0), 2)
             x,y,w,h = cv2.boundingRect(cnt)
             cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
@@ -160,8 +160,8 @@ while True:
             tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
             print(tg)
 
-            ps = pulse_convert(tg[0], tg[1], tg[2])
-            print(ps)
+            #ps = pulse_convert(tg[0], tg[1], tg[2])
+            #print(ps)
 
     cv2.imshow("frame", frame)
     cv2.imshow("hsv", hsv)
