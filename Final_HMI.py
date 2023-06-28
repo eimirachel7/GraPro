@@ -18,7 +18,7 @@ d1 = 7
 a2 = 12
 a3 = 12
 
-#-------------------dong hoc nguoc---------------------------------------------------------
+#-----------------dong hoc nguoc------------------------------------------------------------
 def inv_Kine(xE, yE, zE):
     theta1 = atan2(xE,yE)
     c1 = cos(theta1)
@@ -38,7 +38,6 @@ def inv_Kine(xE, yE, zE):
         return theta
     else:
         pass
-#-------------------------------------------------------------------------------------------
 #-----------------chuyen he truc toa do-----------------------------------------------------
 def coor_move():
     global coord_base_frame, homgen_0_c
@@ -59,8 +58,6 @@ def coor_move():
                                 [0.0],
                                 [1]])
     return coord_base_frame, homgen_0_c
-
-#-------------------------------------------------------------------------------------------
 #-----------------chia xung-----------------------------------------------------------------
 def pulse_convert(t1,t2,t3):
     t11 = np.rad2deg(t1)
@@ -76,8 +73,6 @@ def pulse_convert(t1,t2,t3):
     
     pulse = np.array([p1, p2, p3])
     return pulse
-
-#-------------------------------------------------------------------------------------------
 
 hmi = Tk()
 hmi.title("PROJECT: SORTING OBJECT USING ROBOT ARM")
@@ -268,6 +263,7 @@ def phan_loai_hinh3():
     cap.set(10,0)
     cap.set(11,50)
     cap.set(12,80)
+
     global shape
     shape = "undifined"
 
@@ -279,19 +275,21 @@ def phan_loai_hinh3():
         _, threshold = cv2.threshold(img_gray, 150, 255, 0)
         kernel = np.ones((5,5), np.uint8)
         cv2.dilate(threshold, kernel, iterations=1)
-        threshold = cv2.GaussianBlur(threshold, (15,15), 0)
+        #threshold = cv2.GaussianBlur(threshold, (15,15), 0)
         contours, _ = cv2.findContours(threshold, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         for c in contours:
-            epsilon = 0.03*cv2.arcLength(c, True)
+            epsilon = 0.02*cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, epsilon, True)
             #for pt in approx:
             #    cv2.circle(frame, (pt[0][0], pt[0][1]), 5, (255, 0, 0), -1)
             area = cv2.contourArea(c)
             
-            if area > 10000:
+            if area > 4000 and area < 6000:
                 x,y,w,h = cv2.boundingRect(c)
                 cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
+                cv2.rectangle(threshold, (x,y), (x+w,y+h), (0,255,20), 2)
+
                 x2 = x + int(w/2)
                 y2 = y + int(h/2)
                 cv2.circle(roi, (x2,y2), 2, (0,0,255), 2)
@@ -317,7 +315,6 @@ def phan_loai_hinh3():
                     #cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 else:
                     pass
-                
 
                 text1 = "x: " + str(x2_cm) + "cm, y: " + str(y2_cm) + "cm"
                 text2 = "x: " + str(coord_base_frame[0][0]) + "cm" + ", y: " + str(coord_base_frame[1][0]) + "cm"
@@ -329,6 +326,8 @@ def phan_loai_hinh3():
 
                 #ps = pulse_convert(tg[0], tg[1], tg[2])
                 #print(ps)
+            else: 
+                pass
 
         cv2.imshow("Frame", frame)
         cv2.imshow("RoI", roi)
