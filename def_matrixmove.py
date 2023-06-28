@@ -12,7 +12,7 @@ cap.set(10,0)
 cap.set(11,50)
 cap.set(12,80)
 
-CM_TO_PIXEL = 32 / 640 #32 la so do thuc te cua frame
+CM_TO_PIXEL = 16 / 640 #32 la so do thuc te cua frame
 global d1, a2, a3
 d1 = 7
 a2 = 12
@@ -48,7 +48,7 @@ def coor_move():
     rot_mat_0_c = np.array([[1, 0, 0], 
                             [0, np.cos(rot_angle), -np.sin(rot_angle)], 
                             [0, np.sin(rot_angle), np.cos(rot_angle)]])
-    disp_vec_0_c = np.array([[-1.8],[24.4],[0.0]]) #khoang cach x,y,z giua 2 goc toa do
+    disp_vec_0_c = np.array([[-6],[18.5],[0.0]]) #khoang cach x,y,z giua 2 goc toa do
     
     extra_row_homgen = np.array([[0,0,0,1]])
 
@@ -63,7 +63,7 @@ def coor_move():
 #-------------------------------------------------------------------------------------------
 while True:
     ret, frame = cap.read()
-    frame = cv2.flip(frame,1)
+    #frame = cv2.flip(frame,1)
 
     gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
     _, threshold = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
