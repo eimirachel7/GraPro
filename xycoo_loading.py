@@ -33,7 +33,7 @@ rot_mat_0_c = np.array([[1, 0, 0],
                             [0, np.cos(rot_angle), -np.sin(rot_angle)],
                             [0, np.sin(rot_angle), np.cos(rot_angle)]])
 
-disp_vec_0_c = np.array([[-30],[17.5],[7.0]]) #khoang cach x,y,z giua 2 goc toa do
+disp_vec_0_c = np.array([[-20],[17.5],[7.0]]) #khoang cach x,y,z giua 2 goc toa do
 
 extra_row_homgen = np.array([[0,0,0,1]])
 
