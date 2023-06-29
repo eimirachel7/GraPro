@@ -11,7 +11,7 @@ from decimal import *
 global mat
 mat = np.matrix
 
-CM_TO_PIXEL = 32 / 640 #32 la so do thuc te cua frame
+CM_TO_PIXEL = 15 / 640 #15 la so do thuc te cua frame
 
 global d1, a2, a3
 d1 = 7
@@ -20,7 +20,7 @@ a3 = 12
 
 #-----------------dong hoc nguoc------------------------------------------------------------
 def inv_Kine(xE, yE, zE):
-    theta1 = atan2(xE,yE)
+    theta1 = atan2(yE,xE)
     c1 = cos(theta1)
     s1 = sin(theta1)
 
@@ -42,8 +42,8 @@ def inv_Kine(xE, yE, zE):
         theta = np.array([theta1, theta2, theta3])
         return theta
 
-    else:
-        pass
+    # else:
+    #     pass
 #-----------------chuyen he truc toa do-----------------------------------------------------
 def coor_move():
     global coord_base_frame, homgen_0_c
@@ -53,7 +53,7 @@ def coor_move():
     rot_mat_0_c = np.array([[1, 0, 0], 
                             [0, np.cos(rot_angle), -np.sin(rot_angle)], 
                             [0, np.sin(rot_angle), np.cos(rot_angle)]])
-    disp_vec_0_c = np.array([[-1.8],[24.4],[0.0]]) #khoang cach x,y,z giua 2 goc toa do
+    disp_vec_0_c = np.array([[-20],[17.5],[7.0]]) #khoang cach x,y,z giua 2 goc toa do
     
     extra_row_homgen = np.array([[0,0,0,1]])
 
@@ -69,6 +69,7 @@ def pulse_convert(t1,t2,t3):
     t11 = np.rad2deg(t1)
     t21 = np.rad2deg(t2)
     t31 = np.rad2deg(t3)
+
     p1 = t11 * (500/360)
     p2 = t21 * (500/360)
     p3 = t31 * (500/360)
@@ -266,19 +267,19 @@ def phan_loai_hinh3():
     #480p resolution
     cap.set(3,640) 
     cap.set(4,480)
-    cap.set(10,0)
-    cap.set(11,50)
-    cap.set(12,80)
+    # cap.set(10,0)
+    # cap.set(11,50)
+    # cap.set(12,80)
 
     global shape
     shape = "undifined"
 
     while True:
         ret, frame = cap.read()
-        frame = cv2.flip(frame, 1)
+        #frame = cv2.flip(frame, 1)
         roi = frame[0:480, 140:480]
         img_gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
-        _, threshold = cv2.threshold(img_gray, 150, 255, 0)
+        _, threshold = cv2.threshold(img_gray, 200, 255, 0)
         kernel = np.ones((5,5), np.uint8)
         cv2.dilate(threshold, kernel, iterations=1)
         #threshold = cv2.GaussianBlur(threshold, (15,15), 0)
@@ -291,7 +292,7 @@ def phan_loai_hinh3():
             #    cv2.circle(frame, (pt[0][0], pt[0][1]), 5, (255, 0, 0), -1)
             area = cv2.contourArea(c)
             
-            if area > 4000 and area < 6000:
+            if area > 1000:
                 x,y,w,h = cv2.boundingRect(c)
                 cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 #cv2.rectangle(threshold, (x,y), (x+w,y+h), (0,255,20), 2)
@@ -327,11 +328,11 @@ def phan_loai_hinh3():
                 cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                 cv2.putText(roi, shape, (x, y-5), cv2.FONT_ITALIC, 1, (100, 0, 255), 1, cv2.LINE_AA)
 
-                tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 10) # chieu cao vat so voi toa do robot
+                tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 5) # chieu cao vat so voi toa do robot
                 print(tg)
 
-                ps = pulse_convert(tg[0], tg[1], tg[2])
-                print(ps)
+                # ps = pulse_convert(tg[0], tg[1], tg[2])
+                # print(ps)
             else: 
                 pass
 
