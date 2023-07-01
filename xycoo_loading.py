@@ -68,6 +68,23 @@ def inv_Kine(xE, yE, zE):
     else:
         pass
 #-------------------------------------------------------------------------------------------
+#-----------------chia xung-----------------------------------------------------------------
+def pulse_convert(t1,t2,t3):
+    t11 = np.rad2deg(t1)
+    t21 = np.rad2deg(t2)
+    t31 = np.rad2deg(t3)
+
+    p1 = t11 * (500/360)
+    p2 = t21 * (500/360)
+    p3 = t31 * (500/360)
+
+    p1 = abs(p1)
+    p2 = abs(p2)
+    p3 = abs(p3)
+        
+    pulse = np.array([p1, p2, p3])
+    return pulse
+
 
 while True:
     _, frame = cap.read()
@@ -109,16 +126,19 @@ while True:
             text2 = "x: " + str(coord_base_frame[0][0]) + ", y: " + str(coord_base_frame[1][0])
             cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
-            tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
+            tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 10)
             print(tg)
+
+            # ps = pulse_convert(tg[0], tg[1], tg[2])
+            # print(ps)
             
 
 
 
     cv2.imshow("frame", frame)
     #cv2.imshow("RoI", roi)
-    #cv2.imshow("threshold", threshold)
-    #cv2.imshow("Gray", gray)
+    cv2.imshow("threshold", threshold)
+    cv2.imshow("Gray", gray)
     if cv2.waitKey(1) == 27:
         break
 cap.release()
