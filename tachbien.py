@@ -12,7 +12,10 @@ while True:
     
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     filter = cv2.medianBlur(gray, 3)
+
+    #_, threshold = cv2.threshold(filter, 100, 255, cv2.THRESH_BINARY)
     borders = cv2.Canny(filter, 100, 160, L2gradient=False)
+    
     kernel = np.ones((2,2), np.uint8)
     dilation =cv2.dilate(borders, kernel, iterations=1) #lam day bien
     img_floodfill = dilation.copy()
@@ -21,6 +24,16 @@ while True:
     cv2.floodFill(img_floodfill, mask, (0,0), 255);
     img_floodfill_inverse = cv2.bitwise_not(img_floodfill)
     img_out = dilation|img_floodfill_inverse
+    thres = img_out
+
+    contours, hierarchy = cv2.findContours(thres.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    #contours = contours[1]
+
+    for c in contours:
+        area = cv2.contourArea(c)
+        if area > 500:
+            x,y,w,h = cv2.boundingRect(c)
+            cv2.rectangle(frame, (x,y), (x+w, y+h), (250,150,0),2)
 
     cv2.imshow("frame", frame)
     cv2.imshow("floodfill", img_out)

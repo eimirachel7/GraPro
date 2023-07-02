@@ -8,6 +8,8 @@ from math import *
 global mat
 mat = np.matrix
 
+CM_TO_PIXEL = 15 / 640 #32 la so do thuc te cua frame
+
 global d1, a2, a3 # so do cm
 d1 = 7 
 a2 = 12
@@ -23,30 +25,25 @@ cap.set(4, 480)
 #cap.set(12,100) #saturation
 
 #-----------------chuyen he truc toa do-----------------------------------------------------
-CM_TO_PIXEL = 15 / 640 #32 la so do thuc te cua frame
+def coor_move():
+    global coord_base_frame, homgen_0_c
 
-#def matrix_move ():
-
-rot_angle = 180
-rot_angle = np.deg2rad(rot_angle)
-rot_mat_0_c = np.array([[1, 0, 0],
-                            [0, np.cos(rot_angle), -np.sin(rot_angle)],
+    rot_angle = 180
+    rot_angle = np.deg2rad(rot_angle)
+    rot_mat_0_c = np.array([[1, 0, 0], 
+                            [0, np.cos(rot_angle), -np.sin(rot_angle)], 
                             [0, np.sin(rot_angle), np.cos(rot_angle)]])
+    disp_vec_0_c = np.array([[-1.8],[24.4],[0.0]]) #khoang cach x,y,z giua 2 goc toa do
+    
+    extra_row_homgen = np.array([[0,0,0,1]])
 
-disp_vec_0_c = np.array([[-20],[17.5],[7.0]]) #khoang cach x,y,z giua 2 goc toa do
-
-extra_row_homgen = np.array([[0,0,0,1]])
-
-homgen_0_c = np.concatenate((rot_mat_0_c,disp_vec_0_c), axis=1)
-homgen_0_c = np.concatenate((homgen_0_c, extra_row_homgen), axis=0)
-
-coord_base_frame = np.array([[0.0],
+    homgen_0_c = np.concatenate((rot_mat_0_c,disp_vec_0_c), axis=1)
+    homgen_0_c = np.concatenate((homgen_0_c, extra_row_homgen), axis=0)
+    coord_base_frame = np.array([[0.0],
                                 [0.0],
                                 [0.0],
                                 [1]])
-    #return homgen_0_c, coord_base_frame
-#------------------------------------------------------------------------------------------
-
+    return coord_base_frame, homgen_0_c
 #-------------------dong hoc nguoc---------------------------------------------------------
 def inv_Kine(xE, yE, zE):
     theta1 = atan2(yE,xE)
@@ -67,7 +64,6 @@ def inv_Kine(xE, yE, zE):
         return theta
     else:
         pass
-#-------------------------------------------------------------------------------------------
 #-----------------chia xung-----------------------------------------------------------------
 def pulse_convert(t1,t2,t3):
     t11 = np.rad2deg(t1)
@@ -95,7 +91,7 @@ while True:
     gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
     #mask = object_detector.apply(roi)
     
-    _, threshold = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY)
+    _, threshold = cv2.threshold(gray, 30, 255, cv2.THRESH_BINARY)
     
     kernel = np.ones((5,5),np.uint8)
     cv2.dilate(threshold, kernel, iterations=1)
@@ -118,9 +114,10 @@ while True:
                                 [y2_cm],
                                 [0.0],
                                 [1]])
-            #MT = np.arrmatrix_move()
+            
+
+            coor_move()
             coord_base_frame = homgen_0_c @ cam_ref_coord
-            #MT[2] = MT[1] @ cam_ref_coord
 
             text1 = "x: " + str(x2_cm) + "cm, y: " + str(y2_cm) + "cm"
             text2 = "x: " + str(coord_base_frame[0][0]) + ", y: " + str(coord_base_frame[1][0])
