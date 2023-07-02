@@ -90,11 +90,19 @@ label.pack()
 
 
 def phan_loai_hinh():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap.set(3,640) 
+    cap.set(4,480)
+    # cap.set(10,0)
+    # cap.set(11,50)
+    # cap.set(12,80)
+
+    global shape 
+    shape = "undifined"
 
     while (cap.isOpened()): 
         ret, frame = cap.read()
-        frame = cv2.flip(frame, 1)
+        #frame = cv2.flip(frame, 1)
         roi = frame[0:480, 140:480]
 
         gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
@@ -117,36 +125,54 @@ def phan_loai_hinh():
             approx = cv2.approxPolyDP(c, 0.04*peri, True)
             num_approx = len(approx)
 
-            if area > 5000 and area < 6000:
+            if area > 500:
                 x,y,w,h = cv2.boundingRect(c)
-                cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
+                # cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
+                x2 = x +int(w/2)
+                y2 = y +int(h/2)
+                cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
+
+                x2_cm = x2*CM_TO_PIXEL
+                y2_cm = y2*CM_TO_PIXEL
+                cam_ref_coord = np.array([[x2_cm],
+                                        [y2_cm],
+                                        [0.0],
+                                        [1]])
+                coor_move()
+                coord_base_frame = homgen_0_c @ cam_ref_coord
+                
                 if (num_approx == 4):
-                    approx1 = approx[0,0,:]
-                    approx2 = approx[1,0,:]
-                    approx3 = approx[2,0,:]
-                    approx4 = approx[3,0,:]
+                    # approx1 = approx[0,0,:]
+                    # approx2 = approx[1,0,:]
+                    # approx3 = approx[2,0,:]
+                    # approx4 = approx[3,0,:]
 
-                    canh1 = math.sqrt(math.pow(approx2[0]-approx1[0],2)+math.pow(approx2[1]-approx1[1],2))
-                    canh2 = math.sqrt(math.pow(approx3[0]-approx2[0],2)+math.pow(approx3[1]-approx2[1],2))
-                    dientichtinh = canh1*canh2
-                    dientichreal = cv2.contourArea(c)
-                    tilecanh = canh1/canh2
+                    # canh1 = math.sqrt(math.pow(approx2[0]-approx1[0],2)+math.pow(approx2[1]-approx1[1],2))
+                    # canh2 = math.sqrt(math.pow(approx3[0]-approx2[0],2)+math.pow(approx3[1]-approx2[1],2))
+                    # dientichtinh = canh1*canh2
+                    # dientichreal = cv2.contourArea(c)
+                    # tilecanh = canh1/canh2
 
-                    if (dientichtinh >= dientichreal*0.95 and dientichtinh <= dientichreal*1.05):
-                        if (tilecanh >= 0.95 and tilecanh <= 1.05):
-                            cv2.putText(roi, "square", (x,y), 
-                                        cv2.FONT_HERSHEY_COMPLEX, 0.7, 
-                                        (255, 0, 255), 2 )
-                        else: 
-                            cv2.putText(roi, "rectangle", (x,y),
-                                        cv2.FONT_HERSHEY_COMPLEX,0.7,
-                                        (255, 50, 200), 2)
-                    else: 
-                        cv2.putText(roi,"error", (x,y), 
-                                    cv2.FONT_HERSHEY_COMPLEX, 0.7, 
-                                    (200, 110, 255), 2)
-                        continue
-                        
+                    # if (dientichtinh >= dientichreal*0.95 and dientichtinh <= dientichreal*1.05):
+                    #     if (tilecanh >= 0.95 and tilecanh <= 1.05):
+                    #         cv2.putText(roi, "square", (x,y), 
+                    #                     cv2.FONT_HERSHEY_COMPLEX, 0.7, 
+                    #                     (255, 0, 255), 2 )
+                    #     else: 
+                    #         cv2.putText(roi, "rectangle", (x,y),
+                    #                     cv2.FONT_HERSHEY_COMPLEX,0.7,
+                    #                     (255, 50, 200), 2)
+                    # else: 
+                    #     cv2.putText(roi,"error", (x,y), 
+                    #                 cv2.FONT_HERSHEY_COMPLEX, 0.7, 
+                    #                 (200, 110, 255), 2)
+                    #     continue
+                    shape = "rectangle"
+                    text2 = "x: " + str(coord_base_frame[0][0]) + "cm" + ", y: " + str(coord_base_frame[1][0]) + "cm"
+                    cv2.rectangle(roi, (x,y), (x+w, y+h), (150,25,50), 2)
+                    cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 100, 255),2)
+                    cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
                 elif (num_approx == 3):
                     approx1 = approx[0,0,:]
                     approx2 = approx[1,0,:]
@@ -162,18 +188,23 @@ def phan_loai_hinh():
                     if (dientichtamgiac > dientichreal*0.95 and dientichtamgiac <= dientichreal*1.05):
                         cv2.putText(roi, "triangle", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7,(0, 255, 0), 2)
                         
+                    # else: 
+                    #     cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
+                    #     continue
                     else: 
-                        cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
-                        continue
+                        pass
                 
                 elif (10 <= num_approx <= 20 and area > 100000):
                     cv2.putText(roi, "circle", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 255), 2)
-                else: 
-                    cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
-                    continue
+                # else: 
+                #     cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
+                #     continue
+                else:
+                    pass
                         
         cv2.imshow("frame", frame)
         cv2.imshow("RoI", roi)
+        cv2.imshow("thresh", thresh)
         if cv2.waitKey(1) == 27:
             break
     cap.release()
@@ -496,7 +527,7 @@ def phan_loai_mau():
 
 
 but1 = Button(hmi, text="PHÂN LOẠI HÌNH DÁNG", height=2, width=25, 
-              font=("Montserrat", 12), command=phan_loai_hinh3)
+              font=("Montserrat", 12), command=phan_loai_hinh)
 but1.place(x=90, y=100)
 
 but2 = Button(hmi, text="PHÂN LOẠI MÀU SẮC", height=2, width=25, 
