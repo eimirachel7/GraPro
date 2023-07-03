@@ -140,6 +140,8 @@ def phan_loai_hinh():
                                         [1]])
                 coor_move()
                 coord_base_frame = homgen_0_c @ cam_ref_coord
+                text2 = "x: " + str(coord_base_frame[0][0]) + "cm" + ", y: " + str(coord_base_frame[1][0]) + "cm"
+
                 
                 if (num_approx == 4):
                     # approx1 = approx[0,0,:]
@@ -168,7 +170,6 @@ def phan_loai_hinh():
                     #                 (200, 110, 255), 2)
                     #     continue
                     shape = "rectangle"
-                    text2 = "x: " + str(coord_base_frame[0][0]) + "cm" + ", y: " + str(coord_base_frame[1][0]) + "cm"
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (150,25,50), 2)
                     cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 100, 255),2)
                     cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
@@ -186,7 +187,10 @@ def phan_loai_hinh():
                     dientichreal = cv2.contourArea(c)
 
                     if (dientichtamgiac > dientichreal*0.95 and dientichtamgiac <= dientichreal*1.05):
-                        cv2.putText(roi, "triangle", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7,(0, 255, 0), 2)
+                        shape = "triangle"
+                        cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
+                        cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_ITALIC, 0.5, (0,0,255), 2)
+                        cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7,(0, 255, 0), 2)
                         
                     # else: 
                     #     cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
@@ -194,8 +198,10 @@ def phan_loai_hinh():
                     else: 
                         pass
                 
-                elif (10 <= num_approx <= 20 and area > 100000):
-                    cv2.putText(roi, "circle", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 255), 2)
+                elif (10 <= num_approx <= 20):
+                    shape = "circle"
+                    cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 0, 255), 2)
+                    cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 255), 2)
                 # else: 
                 #     cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
                 #     continue
