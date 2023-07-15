@@ -125,12 +125,12 @@ def phan_loai_hinh():
             approx = cv2.approxPolyDP(c, 0.04*peri, True)
             num_approx = len(approx)
 
-            if area > 500:
+            if area > 500: 
                 x,y,w,h = cv2.boundingRect(c)
                 # cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                 x2 = x +int(w/2)
                 y2 = y +int(h/2)
-                cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
+                # cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
 
                 x2_cm = x2*CM_TO_PIXEL
                 y2_cm = y2*CM_TO_PIXEL
@@ -171,35 +171,42 @@ def phan_loai_hinh():
                     #     continue
                     shape = "rectangle"
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (150,25,50), 2)
+                    cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
                     cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 100, 255),2)
                     cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
                 elif (num_approx == 3):
-                    approx1 = approx[0,0,:]
-                    approx2 = approx[1,0,:]
-                    approx3 = approx[2,0,:]
 
-                    canh1 = math.sqrt(math.pow(approx2[0]-approx1[0],2)+math.pow(approx2[1]-approx1[1],2))
-                    canh2 = math.sqrt(math.pow(approx3[0]-approx2[0],2)+math.pow(approx3[1]-approx2[1],2))
-                    canh3 = math.sqrt(math.pow(approx1[0]-approx3[0],2)+math.pow(approx1[1]-approx3[1],2))
-                    p = (canh1+canh2+canh3)/2
-                    dientichtamgiac = math.sqrt(p*(p-canh1)*(p-canh2)*(p-canh3))
-                    dientichreal = cv2.contourArea(c)
+                    shape = "triangle"
+                    cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
+                    cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
+                    cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_ITALIC, 0.5, (0,0,255), 2)
+                    cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7,(0, 255, 0), 2)
+                    # approx1 = approx[0,0,:]
+                    # approx2 = approx[1,0,:]
+                    # approx3 = approx[2,0,:]
 
-                    if (dientichtamgiac > dientichreal*0.95 and dientichtamgiac <= dientichreal*1.05):
-                        shape = "triangle"
-                        cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
-                        cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_ITALIC, 0.5, (0,0,255), 2)
-                        cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7,(0, 255, 0), 2)
+                    # canh1 = math.sqrt(math.pow(approx2[0]-approx1[0],2)+math.pow(approx2[1]-approx1[1],2))
+                    # canh2 = math.sqrt(math.pow(approx3[0]-approx2[0],2)+math.pow(approx3[1]-approx2[1],2))
+                    # canh3 = math.sqrt(math.pow(approx1[0]-approx3[0],2)+math.pow(approx1[1]-approx3[1],2))
+                    # p = (canh1+canh2+canh3)/2
+                    # dientichtamgiac = math.sqrt(p*(p-canh1)*(p-canh2)*(p-canh3))
+                    # dientichreal = cv2.contourArea(c)
+
+                    # if (dientichtamgiac > dientichreal*0.95 and dientichtamgiac <= dientichreal*1.05):
+                    #     shape = "triangle"
+                    #     cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
+                    #     cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_ITALIC, 0.5, (0,0,255), 2)
+                    #     cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7,(0, 255, 0), 2)
                         
                     # else: 
                     #     cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
                     #     continue
-                    else: 
-                        pass
                 
                 elif (10 <= num_approx <= 20):
                     shape = "circle"
+                    cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
+                    cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
                     cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 0, 255), 2)
                     cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 255), 2)
                 # else: 
