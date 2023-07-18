@@ -439,7 +439,7 @@ def phan_loai_hinh_va_mau():
             if area >= 5000 and area <= 8000:  #dieu chinh kich thuoc 
                 #cv2.drawContours(frame, [approx], 0, (0,0,0), 2)
                 x,y,w,h = cv2.boundingRect(cnt)
-                cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
+                # cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                 
                 x2 = x + int(w/2)
                 y2 = y + int(h/2)
@@ -460,16 +460,19 @@ def phan_loai_hinh_va_mau():
                 #cv2.putText(frame, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
             
                 if len(approx) == 3:
+                    cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                     cv2.putText(roi, ks[i] + " Triangle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
                     cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
                     
                 elif len(approx) >= 4 and len(approx) <= 6:
+                    cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                     cv2.putText(roi, ks[i] + " Rectangle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
                     cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
                 
                 elif len(approx) >= 10 and len(approx) <= 20:
+                    cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                     cv2.putText(roi, ks[i] + " Circle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
                     cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
