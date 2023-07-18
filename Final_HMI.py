@@ -97,11 +97,11 @@ def phan_loai_hinh():
     # cap.set(11,50)
     # cap.set(12,80)
 
-    global shape, countrec, counttri, countcir
+    global shape
     shape = "undifined"
-    countrec = 0
-    counttri = 0
-    countcir = 0
+    # countrec = 0
+    # counttri = 0
+    # countcir = 0
 
     while (cap.isOpened()): 
         ret, frame = cap.read()
@@ -145,8 +145,9 @@ def phan_loai_hinh():
                 coord_base_frame = homgen_0_c @ cam_ref_coord
                 text2 = "x: " + str(coord_base_frame[0][0]) + "cm" + ", y: " + str(coord_base_frame[1][0]) + "cm"
 
-                
+        
                 if (num_approx == 4):
+
                     # approx1 = approx[0,0,:]
                     # approx2 = approx[1,0,:]
                     # approx3 = approx[2,0,:]
@@ -172,13 +173,13 @@ def phan_loai_hinh():
                     #                 cv2.FONT_HERSHEY_COMPLEX, 0.7, 
                     #                 (200, 110, 255), 2)
                     #     continue
-                    countrec = countrec+1
-                    if countrec >= 5:
-                        shape = "rectangle"
-                        cv2.rectangle(roi, (x,y), (x+w, y+h), (150,25,50), 2)
-                        cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
-                        cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 100, 255),2)
-                        cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    
+                    
+                    shape = "rectangle"
+                    cv2.rectangle(roi, (x,y), (x+w, y+h), (150,25,50), 2)
+                    cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
+                    cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 100, 255),2)
+                    cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
                 elif (num_approx == 3):
 
@@ -209,6 +210,7 @@ def phan_loai_hinh():
                     #     continue
                 
                 elif (6 <= num_approx <= 30):
+                
                     shape = "circle"
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
                     cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
@@ -441,7 +443,7 @@ def phan_loai_hinh_va_mau():
             x = approx.ravel()[0]
             y = approx.ravel()[1]
 
-            if area >= 5000 and area <= 8000:  #dieu chinh kich thuoc 
+            if area >= 600:  #dieu chinh kich thuoc 
                 #cv2.drawContours(frame, [approx], 0, (0,0,0), 2)
                 x,y,w,h = cv2.boundingRect(cnt)
                 # cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
@@ -476,7 +478,7 @@ def phan_loai_hinh_va_mau():
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
                     cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
                 
-                elif len(approx) >= 10 and len(approx) <= 20:
+                elif len(approx) >= 6 and len(approx) <= 20:
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                     cv2.putText(roi, ks[i] + " Circle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
@@ -485,8 +487,8 @@ def phan_loai_hinh_va_mau():
                 tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
                 print(tg)
 
-                ps = pulse_convert(tg[0], tg[1], tg[2])
-                print(ps)
+                # ps = pulse_convert(tg[0], tg[1], tg[2])
+                # print(ps)
 
         cv2.imshow("frame", frame)
         cv2.imshow("hsv", hsv)
