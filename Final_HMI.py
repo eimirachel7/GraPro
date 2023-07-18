@@ -203,7 +203,7 @@ def phan_loai_hinh():
                     #     cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
                     #     continue
                 
-                elif (10 <= num_approx <= 20):
+                elif (6 <= num_approx <= 30):
                     shape = "circle"
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
                     cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
