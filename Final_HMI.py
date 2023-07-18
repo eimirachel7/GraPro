@@ -97,8 +97,11 @@ def phan_loai_hinh():
     # cap.set(11,50)
     # cap.set(12,80)
 
-    global shape 
+    global shape, countrec, counttri, countcir
     shape = "undifined"
+    countrec = 0
+    counttri = 0
+    countcir = 0
 
     while (cap.isOpened()): 
         ret, frame = cap.read()
@@ -169,11 +172,13 @@ def phan_loai_hinh():
                     #                 cv2.FONT_HERSHEY_COMPLEX, 0.7, 
                     #                 (200, 110, 255), 2)
                     #     continue
-                    shape = "rectangle"
-                    cv2.rectangle(roi, (x,y), (x+w, y+h), (150,25,50), 2)
-                    cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
-                    cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 100, 255),2)
-                    cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    countrec = countrec+1
+                    if countrec >= 5:
+                        shape = "rectangle"
+                        cv2.rectangle(roi, (x,y), (x+w, y+h), (150,25,50), 2)
+                        cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
+                        cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 100, 255),2)
+                        cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
                 elif (num_approx == 3):
 
@@ -284,8 +289,8 @@ def phan_loai_hinh2():
                     #to determine the shape of the contour
                     x,y,w,h = cv2.boundingRect(contours[i])
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
-                    if(vtc>=4 and vtc<=6):
-                        cv2.putText(roi,'RECTANGLE',(x,y),cv2.FONT_HERSHEY_SIMPLEX,scale,(0,255,255),2,cv2.LINE_AA)
+                    # if(vtc>=4 and vtc<=6):
+                    cv2.putText(roi,'RECTANGLE',(x,y),cv2.FONT_HERSHEY_SIMPLEX,scale,(0,255,255),2,cv2.LINE_AA)
                 else:
                     #detect and label circle
                     area = cv2.contourArea(contours[i])
@@ -338,7 +343,7 @@ def phan_loai_hinh3():
             
             if area > 1000:
                 x,y,w,h = cv2.boundingRect(c)
-                cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
+                # cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 #cv2.rectangle(threshold, (x,y), (x+w,y+h), (0,255,20), 2)
 
                 x2 = x + int(w/2)
@@ -357,13 +362,13 @@ def phan_loai_hinh3():
                 #shape = "undefined"
                 if len(approx) == 3:
                     shape = "triangle"
-                    #cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
+                    cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 elif len(approx)>=4 and len(approx)<=6:
                     shape = "Rectangle"
-                    #cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
-                elif len(approx)>=10 and len(approx)<=30:
+                    cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
+                elif len(approx)>=7 and len(approx)<=30:
                     shape = "Circle"
-                    #cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
+                    cv2.rectangle(roi, (x,y), (x+w,y+h), (0,255,20), 2)
                 else:
                     pass
 
