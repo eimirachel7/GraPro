@@ -561,11 +561,11 @@ but3 = Button(hmi, text="PHÂN LOẠI HÌNH VÀ MÀU", height=2, width=25,
               font=("Montserrat", 12), command=phan_loai_hinh_va_mau)
 but3.place(x=90, y=300)
 
-# img_hust = (Image.open(r'H:\SHIET\Python\ImgProcessing\GraPro\hustlogo.PNG'))
-# resize = img_hust.resize((200,295), Image.LANCZOS)
-# img = ImageTk.PhotoImage(resize)
-# #img = ImageTk.PhotoImage(img_hust)
-# anh = Button(hmi, text="", font=("Montserrat", 12), image=img)
-# anh.place(x=400, y=70)
+img_hust = (Image.open(r'H:\SHIET\Python\ImgProcessing\GraPro\hustlogo.PNG'))
+resize = img_hust.resize((200,295), Image.LANCZOS)
+img = ImageTk.PhotoImage(resize)
+#img = ImageTk.PhotoImage(img_hust)
+anh = Button(hmi, text="", font=("Montserrat", 12), image=img)
+anh.place(x=400, y=70)
 
 hmi.mainloop()
