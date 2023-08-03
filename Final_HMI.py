@@ -85,7 +85,8 @@ hmi = Tk()
 hmi.title("PROJECT: SORTING OBJECT USING ROBOT ARM")
 hmi.geometry("700x500")
 
-label = Label(hmi, text="MÀN HÌNH ĐIỀU KHIỂN", font=("Montserrat", 20))
+label = Label(hmi, text="MONITOR CONTROLLER", font=("Montserrat", 20))
+label.place(x=40,y=50)
 label.pack()
 
 
