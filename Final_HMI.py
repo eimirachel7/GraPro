@@ -407,9 +407,9 @@ def phan_loai_hinh_va_mau():
     cap.set(3,640)
     cap.set(4,480)
 
-    cap.set(10,250) #brightness
-    cap.set(11,50) #contrast
-    cap.set(12,100) #saturation
+    # cap.set(10,250) #brightness
+    # cap.set(11,50) #contrast
+    # cap.set(12,100) #saturation
 
     while True:
         _, frame = cap.read()
@@ -512,16 +512,20 @@ def phan_loai_mau():
     while True:
 
         _, frame = cap.read()
-        frame = cv2.flip(frame, 1)
-        hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        # frame = cv2.flip(frame, 1)
+        roi = frame[0:480, 140:480]
+        blurred = cv2.GaussianBlur(roi, (11,11), 0)
+        hsv_frame = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
         height, width, _ = frame.shape
         cx = int(width/2)
         cy = int(height/2)
 
         pixel_center = hsv_frame[cx,cy]
         hue_value = pixel_center[0]
-        sat_value = pixel_center[1]
-        lum_value = pixel_center[2]
+        # sat_value = pixel_center[1]
+        # lum_value = pixel_center[2]
 
         color = "Undefined"
         #color = "Undefined"
@@ -533,9 +537,9 @@ def phan_loai_mau():
             color = "BLUE"
         else:
             pass
+        
 
-
-        pixel_center_bgr = frame[cy,cx]
+        pixel_center_bgr = hsv_frame[cy,cx]
         b, g, r = int(pixel_center_bgr[0]), int(pixel_center[1]), int(pixel_center[2])
 
         #cv2.rectangle(frame, (cx-220, 100), (cx + 200, 120), (255, 255, 255), -1)
@@ -543,6 +547,8 @@ def phan_loai_mau():
         cv2.circle(frame, (cx, cy), 10, (25,25,25), 3)
         
         cv2.imshow("Frame", frame)
+        cv2.imshow("RoI", roi)
+        cv2.imshow("HSV", hsv_frame)
         if cv2.waitKey(1) == 27:
             break
     cap.release()
