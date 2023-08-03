@@ -108,6 +108,11 @@ def phan_loai_hinh():
         #frame = cv2.flip(frame, 1)
         roi = frame[0:480, 140:480]
 
+        height, width, _ = frame.shape
+        cx = int(width/2)
+        cy = int(height/2)
+        cv2.putText(frame, "LOCATION: ", (cx-270,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
+
         gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         processed_image = cv2.medianBlur(gray, 3)
         anh_tach_bien = cv2.Canny(processed_image, 30, 140, L2gradient=False)
@@ -179,14 +184,14 @@ def phan_loai_hinh():
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (150,25,50), 2)
                     cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
                     cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 100, 255),2)
-                    cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    cv2.putText(roi, text2, (cx-320,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
 
                 elif (num_approx == 3):
 
                     shape = "triangle"
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
                     cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
-                    cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_ITALIC, 0.5, (0,0,255), 2)
+                    cv2.putText(roi, text2, (cx-320,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
                     cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7,(0, 255, 0), 2)
                     # approx1 = approx[0,0,:]
                     # approx2 = approx[1,0,:]
@@ -214,13 +219,17 @@ def phan_loai_hinh():
                     shape = "circle"
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
                     cv2.circle(roi, (x2,y2), 2, (0, 0, 200), 2)
-                    cv2.putText(roi, text2, (x2-10, y2-10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 0, 255), 2)
+                    cv2.putText(roi, text2, (cx-320,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
                     cv2.putText(roi, shape, (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (255, 255, 255), 2)
                 # else: 
                 #     cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
                 #     continue
                 else:
                     pass
+
+                tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
+                print(tg)
+
                         
         cv2.imshow("frame", frame)
         cv2.imshow("RoI", roi)
@@ -398,10 +407,10 @@ def phan_loai_hinh3():
 def phan_loai_hinh_va_mau():
     #-------------------------------------------------------------------------------------------
 
-    lower = {'red':([166, 84, 141]), 'blue':([97, 100, 117]),'yellow':([23, 59, 119]), 'orange':([0, 50, 80]), 'purple':([130, 80, 80])} #assign new item lower['blue'] = (93, 10, 0)
-    upper = {'red':([186,255,255]), 'blue':([117,255,255]), 'yellow':([54,255,255]), 'orange':([20,255,255]), 'purple':([150, 255, 255])}
+    lower = {'Red':([166, 84, 141]), 'Blue':([97, 100, 117]),'Yellow':([23, 59, 119]), 'Orange':([0, 50, 80]), 'Purple':([130, 80, 80])} #assign new item lower['blue'] = (93, 10, 0)
+    upper = {'Red':([186,255,255]), 'Blue':([117,255,255]), 'Yellow':([54,255,255]), 'Orange':([20,255,255]), 'Purple':([150, 255, 255])}
 
-    colors = {'red':(0,0,255), 'blue':(255,0,0), 'yellow':(0, 255, 217), 'orange':(0,140,255), 'purple':(211,0,148)}
+    colors = {'Red':(0,0,255), 'Blue':(255,0,0), 'Yellow':(0, 255, 217), 'Orange':(0,140,255), 'Purple':(211,0,148)}
 
     cap = cv2.VideoCapture(0)
     cap.set(3,640)
@@ -418,6 +427,11 @@ def phan_loai_hinh_va_mau():
         gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(roi, (11,11), 0)
         hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+
+        height, width, _ = frame.shape
+        cx = int(width/2)
+        cy = int(height/2)
+        cv2.putText(frame, "LOCATION: ", (cx-270,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
 
         mlist = []
         clist = []
@@ -470,19 +484,19 @@ def phan_loai_hinh_va_mau():
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                     cv2.putText(roi, ks[i] + " Triangle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
-                    cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
+                    cv2.putText(roi, text2, (cx-320,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
                     
                 elif len(approx) >= 4 and len(approx) <= 6:
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                     cv2.putText(roi, ks[i] + " Rectangle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
-                    cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
+                    cv2.putText(roi, text2, (cx-320,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
                 
                 elif len(approx) >= 6 and len(approx) <= 20:
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                     cv2.putText(roi, ks[i] + " Circle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
-                    cv2.putText(roi, text2, (x2-10,y2-10),cv2.FONT_ITALIC,0.5, (255,50,100),2)
+                    cv2.putText(roi, text2, (cx-320,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
             
                 tg = inv_Kine(coord_base_frame[0][0], coord_base_frame[1][0], 3)
                 print(tg)
@@ -542,7 +556,7 @@ def phan_loai_mau():
         pixel_center_bgr = hsv_frame[cy,cx]
         b, g, r = int(pixel_center_bgr[0]), int(pixel_center[1]), int(pixel_center[2])
 
-        #cv2.rectangle(frame, (cx-220, 100), (cx + 200, 120), (255, 255, 255), -1)
+        cv2.rectangle(frame, (cx-220, 100), (cx + 200, 120), (255, 255, 255), -1)
         cv2.putText(frame, color, (cx - 200, 100), 0, 3, (b, g, r), 5)
         cv2.circle(frame, (cx, cy), 10, (25,25,25), 3)
         
