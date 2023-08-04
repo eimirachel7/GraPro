@@ -422,7 +422,7 @@ def phan_loai_hinh_va_mau():
 
     while True:
         _, frame = cap.read()
-        frame = cv2.flip(frame, 1)
+        # frame = cv2.flip(frame, 1)
         roi = frame[0:480, 140:480]
         gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(roi, (11,11), 0)
@@ -519,9 +519,9 @@ def phan_loai_mau():
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     cap.set(3,640)
     cap.set(4,480)
-    cap.set(10,250) #brightness
-    cap.set(11,100) #contrast
-    cap.set(12,100) #saturation
+    # cap.set(10,250) #brightness
+    # cap.set(11,100) #contrast
+    # cap.set(12,100) #saturation
     
     while True:
 
