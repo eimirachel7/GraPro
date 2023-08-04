@@ -90,7 +90,7 @@ label.pack()
 
 
 def phan_loai_hinh():
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
     cap.set(3,640) 
     cap.set(4,480)
     # cap.set(10,0)
@@ -133,7 +133,7 @@ def phan_loai_hinh():
             approx = cv2.approxPolyDP(c, 0.04*peri, True)
             num_approx = len(approx)
 
-            if area > 500: 
+            if area > 2000: 
                 x,y,w,h = cv2.boundingRect(c)
                 # cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                 x2 = x +int(w/2)
@@ -151,7 +151,7 @@ def phan_loai_hinh():
                 text2 = "x: " + str(coord_base_frame[0][0]) + "cm" + ", y: " + str(coord_base_frame[1][0]) + "cm"
 
         
-                if (num_approx == 4):
+                if (num_approx>=4 and num_approx<=6):
 
                     # approx1 = approx[0,0,:]
                     # approx2 = approx[1,0,:]
@@ -214,7 +214,7 @@ def phan_loai_hinh():
                     #     cv2.putText(roi,"error", (x,y), cv2.FONT_HERSHEY_COMPLEX, 0.7, (200, 110, 255), 2)
                     #     continue
                 
-                elif (6 <= num_approx <= 30):
+                elif (10 <= num_approx <= 30):
                 
                     shape = "circle"
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (150, 0, 255), 2)
@@ -412,7 +412,7 @@ def phan_loai_hinh_va_mau():
 
     colors = {'Red':(0,0,255), 'Blue':(255,0,0), 'Yellow':(0, 255, 217), 'Orange':(0,140,255), 'Purple':(211,0,148)}
 
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
     cap.set(3,640)
     cap.set(4,480)
 
@@ -457,7 +457,7 @@ def phan_loai_hinh_va_mau():
             x = approx.ravel()[0]
             y = approx.ravel()[1]
 
-            if area >= 600:  #dieu chinh kich thuoc 
+            if area >= 2000:  #dieu chinh kich thuoc 
                 #cv2.drawContours(frame, [approx], 0, (0,0,0), 2)
                 x,y,w,h = cv2.boundingRect(cnt)
                 # cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
@@ -492,7 +492,7 @@ def phan_loai_hinh_va_mau():
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
                     cv2.putText(roi, text2, (cx-320,cy-200),cv2.FONT_ITALIC,0.5, (255,250,200),2)
                 
-                elif len(approx) >= 6 and len(approx) <= 20:
+                elif len(approx) >= 10 and len(approx) <= 20:
                     cv2.rectangle(roi, (x,y), (x+w, y+h), (0,255,50), 2)
                     cv2.putText(roi, ks[i] + " Circle", (x-10, y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, colors[ks[i]], 2)
                     cv2.circle(roi, (x2,y2), 4, (0,255,255), 1)
@@ -516,7 +516,7 @@ def phan_loai_mau():
     
     
     #label.configure(text="PHÂN LOẠI MÀU SẮC", font=("Montserrat", 20))
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
     cap.set(3,640)
     cap.set(4,480)
     # cap.set(10,250) #brightness
